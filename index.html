@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HARURU | Portfolio</title>
+    <meta name="description" content="クリエイター HARURU のポートフォリオサイトです。">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="container header-container">
+            <a href="#" class="logo">HARURU</a>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="#intro" class="nav-link">自己紹介</a></li>
+                    <li class="nav-item"><a href="#works" class="nav-link">作品集</a></li>
+                    <li class="nav-item"><a href="#contact" class="nav-link">お問い合わせ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="intro" class="hero">
+            <div class="container hero-container">
+                <div class="hero-content fade-in">
+                    <h1 class="hero-title">こんにちは、<span class="highlight">HARURU</span>です。</h1>
+                    <p class="hero-description">
+                        デジタルな世界に新しい価値を創造するクリエイターです。<br>
+                        Webデザイン、UI/UX、グラフィックデザインなど、<br>
+                        幅広い領域で活動しています。
+                    </p>
+                </div>
+                <div class="hero-image fade-in delay-200">
+                    <!-- Placeholder for profile image -->
+                    <div class="image-placeholder profile-placeholder">
+                        <span>プロフィール画像</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="works" class="works">
+            <div class="container">
+                <h2 class="section-title fade-in">作品集</h2>
+                <div class="works-grid">
+                    <!-- Work Card 1: 3D Athletic Game -->
+                    <article class="work-card fade-in delay-200">
+                        <div class="work-image">
+                            <!-- Placeholder -->
+                            <div class="image-placeholder bg-purple">
+                                <span>3D Athletic Game</span>
+                            </div>
+                        </div>
+                        <div class="work-content">
+                            <h3 class="work-title">3D Athletic Game</h3>
+                            <p class="work-description">キーボードでボールを操作し、障害物を避けながらゴールを目指す3Dゲーム！</p>
+                            <a href="./3d-athletic/dist/index.html" class="work-link" target="_blank">遊ぶ <span
+                                    class="arrow">→</span></a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <div class="container contact-container fade-in">
+                <h2 class="section-title">お問い合わせ</h2>
+                <p class="contact-text">お仕事のご依頼やご相談は、お気軽にご連絡ください。</p>
+                <a href="mailto:contact@haruru.example.com" class="btn btn-primary">メールを送る</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-container">
+            <p class="copyright">&copy; 2024 HARURU. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

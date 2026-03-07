@@ -1,0 +1,114 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body,
+html,
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.ui-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.timer {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.controls-help {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: white;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 20px 40px;
+  border-radius: 12px;
+  text-shadow: 1px 1px 0 #000;
+}
+
+.controls-help h2 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  color: #ffd700;
+}
+
+.controls-help p {
+  font-size: 18px;
+  margin: 5px 0;
+}
+
+.overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 40px 60px;
+  border-radius: 16px;
+  text-align: center;
+  pointer-events: auto;
+  border: 2px solid #e74c3c;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
+
+.clear-overlay {
+  border-color: #2ecc71;
+  box-shadow: 0 0 20px rgba(46, 204, 113, 0.5);
+}
+
+.overlay h1 {
+  color: white;
+  font-size: 56px;
+  margin-bottom: 20px;
+}
+
+.clear-overlay h1 {
+  color: #2ecc71;
+}
+
+.overlay p {
+  color: white;
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
+.restart-btn {
+  padding: 15px 40px;
+  font-size: 24px;
+  font-weight: bold;
+  background: #fff;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.restart-btn:hover {
+  transform: scale(1.05);
+  background: #eee;
+}
