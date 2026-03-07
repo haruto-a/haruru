@@ -1,0 +1,101 @@
+:root {
+    --primary-color: #ffcc00;
+    --text-shadow: 2px 2px 0px #000;
+    --font-family: 'Courier New', Courier, monospace;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #202028;
+    color: white;
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background-color: #5c94fc; /* Sky blue */
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    border: 4px solid #fff;
+    image-rendering: pixelated; /* Important for retro look */
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+#score-board {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: var(--text-shadow);
+}
+
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.6);
+    text-align: center;
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    text-shadow: 4px 4px 0px #d32f2f;
+    letter-spacing: 2px;
+}
+
+p {
+    font-size: 20px;
+    margin-bottom: 10px;
+    text-shadow: var(--text-shadow);
+    animation: blink 1s infinite;
+}
+
+.controls {
+    font-size: 16px;
+    color: #ccc;
+    margin-top: 20px;
+    animation: none;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
