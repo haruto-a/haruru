@@ -10,11 +10,11 @@ export default function App() {
   return (
     <KeyboardControls
       map={[
-        { name: 'forward', keys: ['ArrowUp', 'KeyW'] },
-        { name: 'backward', keys: ['ArrowDown', 'KeyS'] },
-        { name: 'left', keys: ['ArrowLeft', 'KeyA'] },
-        { name: 'right', keys: ['ArrowRight', 'KeyD'] },
-        { name: 'jump', keys: ['Space'] },
+        { name: 'forward', keys: ['ArrowUp', 'KeyW', 'w', 'W'] },
+        { name: 'backward', keys: ['ArrowDown', 'KeyS', 's', 'S'] },
+        { name: 'left', keys: ['ArrowLeft', 'KeyA', 'a', 'A'] },
+        { name: 'right', keys: ['ArrowRight', 'KeyD', 'd', 'D'] },
+        { name: 'jump', keys: ['Space', ' '] },
       ]}
     >
       <div style={{ width: '100vw', height: '100vh', touchAction: 'none' }}>

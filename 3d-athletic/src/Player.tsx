@@ -16,21 +16,11 @@ export function Player() {
     const [subscribeKeys, getKeys] = useKeyboardControls()
 
     useEffect(() => {
-        // スタート判定
-        const unsubscribe = subscribeKeys(
-            (state) => state.forward || state.backward || state.left || state.right,
-            (pressed) => {
-                if (pressed && status === 'ready') {
-                    actions.start()
-                }
-            }
-        )
-
         // ジャンプ判定
         const unsubscribeJump = subscribeKeys(
             (state) => state.jump,
             (pressed) => {
-                if (pressed && rb.current && status === 'playing') {
+                if (pressed && rb.current && useGameStore.getState().status === 'playing') {
                     const vel = rb.current.linvel()
                     // 簡易的な接地判定（y方向の速度がほぼ0のときのみジャンプ可能とする）
                     if (Math.abs(vel.y) < 0.1) {
@@ -40,10 +30,9 @@ export function Player() {
             }
         )
         return () => {
-            unsubscribe()
             unsubscribeJump()
         }
-    }, [status, subscribeKeys, actions])
+    }, [subscribeKeys])
 
     useEffect(() => {
         if (status === 'ready' && rb.current) {
@@ -61,7 +50,16 @@ export function Player() {
         // カメラをプレイヤーの位置に追従させる（目に相当する高さに少しオフセット）
         camera.position.set(pos.x, pos.y + 0.2, pos.z)
 
-        const { forward, backward, left, right } = getKeys()
+        const { forward, backward, left, right, jump } = getKeys()
+
+        // 入力があったらゲームスタート
+        if (status === 'ready' && (forward || backward || left || right || jump)) {
+            actions.start()
+        }
+
+        // プレイ中でなければ移動処理を行わない（ただしカメラ追従は行う）
+        if (useGameStore.getState().status !== 'playing') return
+
 
         // カメラの向いている方向（前）を取得
         const forwardVector = new THREE.Vector3()
