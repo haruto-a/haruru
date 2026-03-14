@@ -10,7 +10,10 @@
 
 <body>
   <div id="ui-layer">
-    <div id="timer" class="timer">Time: 0.00s</div>
+    <div id="status-bar">
+      <div id="stage-info">Stage: 1 / 50</div>
+      <div id="timer" class="timer">Time: 0.00s</div>
+    </div>
 
     <div id="ready-overlay" class="overlay overlay-soft">
       <h2>3D Athletic Game</h2>
@@ -26,9 +29,10 @@
     </div>
 
     <div id="clear-overlay" class="overlay hidden">
-      <h1>GOAL!</h1>
+      <h1 id="clear-title">GOAL!</h1>
       <p id="clear-time-text">Clear Time: 0.00s</p>
-      <button id="reset-btn" class="restart-btn">最初から遊ぶ</button>
+      <button id="next-stage-btn" class="restart-btn" style="margin-bottom: 10px;">次のステージへ</button>
+      <button id="reset-btn" class="restart-btn" style="background-color: #95a5a6;">最初から遊ぶ</button>
     </div>
   </div>
 
