@@ -131,11 +131,15 @@ function createBox(width, height, depth, x, y, z, material, isGoal = false, isOb
     if (isGoal) {
         body.addEventListener('collide', (e) => {
             if (status === 'playing') {
-                if (currentStage >= MAX_STAGE) {
-                    setStatus('allclear');
-                } else {
-                    setStatus('clear');
-                }
+                setTimeout(() => {
+                    if (status === 'playing') {
+                        if (currentStage >= MAX_STAGE) {
+                            setStatus('allclear');
+                        } else {
+                            setStatus('clear');
+                        }
+                    }
+                }, 0);
             }
         });
     }
