@@ -91,7 +91,7 @@ const blockMaterial = new THREE.MeshStandardMaterial({ color: '#2b3036', roughne
 const obstacleMaterial = new THREE.MeshStandardMaterial({ color: '#ff6600', emissive: '#ff4400', emissiveIntensity: 0.8, roughness: 0.3 }); // ネオンオレンジクリスタル
 const goalMaterial = new THREE.MeshStandardMaterial({ color: '#00ffff', roughness: 0.2, emissive: '#00ffff', emissiveIntensity: 1.0 }); // 発光シアン
 const trampolineMaterial = new THREE.MeshStandardMaterial({ color: '#ff8800', emissive: '#ff5500', emissiveIntensity: 0.7, roughness: 0.4 }); // 発光オレンジ
-const movingPlatformMaterial = new THREE.MeshStandardMaterial({ color: '#00ffff', emissive: '#00aaa', emissiveIntensity: 0.6, roughness: 0.5 }); // 発光シアン
+const movingPlatformMaterial = new THREE.MeshStandardMaterial({ color: '#00ffff', emissive: '#00aaaa', emissiveIntensity: 0.6, roughness: 0.5 }); // 発光シアン
 const wallRunMaterial = new THREE.MeshStandardMaterial({ color: '#00ffff', emissive: '#00ffff', emissiveIntensity: 0.5, transparent: true, opacity: 0.6, wireframe: true }); // サイバー感のある壁
 
 // 物理マテリアルの定義と接触設定
