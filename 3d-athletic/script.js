@@ -199,6 +199,18 @@ function clearStage() {
 
 // チェイサー（追跡エネミー）の生成
 function spawnChaser() {
+    // ステージ15未満の場合は敵を出さない
+    if (currentStage < 15) {
+        if (chaserEnemy) {
+            scene.remove(chaserEnemy.mesh);
+            chaserEnemy.mesh.geometry.dispose();
+            chaserEnemy.mesh.material.dispose();
+            world.removeBody(chaserEnemy.body);
+            chaserEnemy = null;
+        }
+        return;
+    }
+
     // スポーン位置: プレイヤーの少し背後（Z軸の+方向）で高い位置
     const spawnZ = 8;
     const spawnY = 5;
