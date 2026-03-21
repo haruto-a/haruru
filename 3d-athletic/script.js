@@ -415,13 +415,91 @@ function setStatus(s) {
     }
 }
 
-// クリックでスタート
+let isWhipping = false;
+
+function useWhip() {
+    if (isWhipping) return;
+    isWhipping = true;
+
+    const whipLength = 20; // ムチの届く距離
+    
+    // Raycasterでカメラの正面を判定
+    const raycaster = new THREE.Raycaster();
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    raycaster.set(camera.position, forward);
+    
+    // 判定対象（エネミーと障害物）
+    const targets = [];
+    if (chaserEnemy) targets.push(chaserEnemy.mesh);
+    stageObjects.forEach(obj => {
+        if (obj.isObstacle) targets.push(obj.mesh);
+    });
+    
+    let hitDistance = whipLength;
+    let hitObject = null;
+    
+    const intersects = raycaster.intersectObjects(targets);
+    if (intersects.length > 0 && intersects[0].distance <= whipLength) {
+        hitDistance = intersects[0].distance;
+        hitObject = intersects[0].object;
+    }
+    
+    // ムチの描画（光るシリンダー）
+    // カメラの右下少し手前から、カメラ正面のヒットポイントに向けて線を引く
+    const startPoint = new THREE.Vector3(0.5, -0.5, -1);
+    startPoint.applyMatrix4(camera.matrixWorld); 
+
+    const endPoint = new THREE.Vector3(0, 0, -hitDistance);
+    endPoint.applyMatrix4(camera.matrixWorld);
+
+    const distance = startPoint.distanceTo(endPoint);
+    const cylinderGeom = new THREE.CylinderGeometry(0.08, 0.01, distance, 8); 
+    cylinderGeom.translate(0, distance / 2, 0); // 原点を根元にする
+    cylinderGeom.rotateX(Math.PI / 2);          // Z方向（奥）に向ける
+
+    const whipMaterial = new THREE.MeshStandardMaterial({ color: '#ffaa00', emissive: '#ffaa00', emissiveIntensity: 2.0 });
+    const whipMesh = new THREE.Mesh(cylinderGeom, whipMaterial);
+    
+    whipMesh.position.copy(startPoint);
+    whipMesh.lookAt(endPoint);
+    scene.add(whipMesh);
+
+    // 破壊処理（ヒットした場合）
+    if (hitObject) {
+        if (chaserEnemy && hitObject === chaserEnemy.mesh) {
+            scene.remove(chaserEnemy.mesh);
+            world.removeBody(chaserEnemy.body);
+            chaserEnemy = null;
+        } else {
+            const idx = stageObjects.findIndex(o => o.mesh === hitObject);
+            if (idx !== -1) {
+                const obj = stageObjects[idx];
+                scene.remove(obj.mesh);
+                if (obj.body) world.removeBody(obj.body);
+                stageObjects.splice(idx, 1);
+            }
+        }
+    }
+    
+    // 短時間でムチを消去
+    setTimeout(() => {
+        scene.remove(whipMesh);
+        cylinderGeom.dispose();
+        whipMaterial.dispose();
+        isWhipping = false;
+    }, 150);
+}
+
+// クリックでスタート ＆ ムチ攻撃
 document.addEventListener('click', (e) => {
     // UIボタンクリック時は反応させない
     if (e.target.tagName === 'BUTTON') return;
 
     if (status === 'ready' || status === 'gameover' || status === 'clear' || status === 'allclear') {
         setStatus('playing');
+    } else if (status === 'playing') {
+        useWhip();
     }
 });
 

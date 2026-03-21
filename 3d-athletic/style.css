@@ -85,3 +85,31 @@ body {
 h1 { margin: 0 0 20px 0; font-size: 3rem; }
 h2 { margin: 0 0 15px 0; }
 p { margin: 5px 0; line-height: 1.6; }
+
+.title-screen {
+    background-image: url('cover.png');
+    background-size: cover;
+    background-position: center;
+    background-color: #001133;
+}
+
+.title-content {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    width: 320px;
+    padding: 40px;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.title-content p {
+    font-size: 1.05rem;
+    margin: 8px 0;
+}
