@@ -34,9 +34,9 @@ const nextStageBtn = document.getElementById('next-stage-btn');
 
 // --- Three.js セットアップ ---
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#FF8C00'); // 深い夕暮れのオレンジ
+scene.background = new THREE.Color('#00BFFF'); // カバー画像のような鮮明な青空
 // Fogの開始距離を遠くし、ゲームエリア全体を見渡せるようにする
-scene.fog = new THREE.Fog('#FF8C00', 30, 150);
+scene.fog = new THREE.Fog('#87CEEB', 30, 150); // 雲のように明るい水色のフォグ
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -49,10 +49,10 @@ document.body.appendChild(renderer.domElement);
 const controls = new PointerLockControls(camera, document.body);
 
 // --- ライティング ---
-const ambientLight = new THREE.AmbientLight('#ffeedd', 0.5); // 夕暮れ風の環境光
+const ambientLight = new THREE.AmbientLight('#ffffff', 0.8); // 明るいアンビエント光
 scene.add(ambientLight);
 
-const sun = new THREE.DirectionalLight('#FFDAB9', 1.2); // 夕日のようなオレンジがかった光
+const sun = new THREE.DirectionalLight('#ffffff', 1.4); // まばゆい昼間の光
 sun.position.set(10, 20, 5); // 光の角度を斜めにする
 sun.castShadow = true;
 sun.shadow.camera.left = -20;
@@ -87,12 +87,12 @@ const playerMesh = new THREE.Mesh(
 scene.add(playerMesh);
 
 // --- レベル構築と管理 ---
-const blockMaterial = new THREE.MeshStandardMaterial({ color: '#555555', roughness: 0.9, metalness: 0.1 }); // コンクリート風のグレー
-const obstacleMaterial = new THREE.MeshStandardMaterial({ color: '#e74c3c', roughness: 0.5 });
-const goalMaterial = new THREE.MeshStandardMaterial({ color: '#2ecc71', roughness: 0.2, emissive: '#2ecc71', emissiveIntensity: 0.5 });
-const trampolineMaterial = new THREE.MeshStandardMaterial({ color: '#e67e22', roughness: 0.4 }); // オレンジ色のトランポリン
-const movingPlatformMaterial = new THREE.MeshStandardMaterial({ color: '#3498db', roughness: 0.7 }); // 水色の動く足場
-const wallRunMaterial = new THREE.MeshStandardMaterial({ color: '#2ecc71', roughness: 0.6, transparent: true, opacity: 0.8 }); // 緑色の壁（ウォールラン用）
+const blockMaterial = new THREE.MeshStandardMaterial({ color: '#2b3036', roughness: 0.7, metalness: 0.3 }); // ダークストーン
+const obstacleMaterial = new THREE.MeshStandardMaterial({ color: '#ff6600', emissive: '#ff4400', emissiveIntensity: 0.8, roughness: 0.3 }); // ネオンオレンジクリスタル
+const goalMaterial = new THREE.MeshStandardMaterial({ color: '#00ffff', roughness: 0.2, emissive: '#00ffff', emissiveIntensity: 1.0 }); // 発光シアン
+const trampolineMaterial = new THREE.MeshStandardMaterial({ color: '#ff8800', emissive: '#ff5500', emissiveIntensity: 0.7, roughness: 0.4 }); // 発光オレンジ
+const movingPlatformMaterial = new THREE.MeshStandardMaterial({ color: '#00ffff', emissive: '#00aaa', emissiveIntensity: 0.6, roughness: 0.5 }); // 発光シアン
+const wallRunMaterial = new THREE.MeshStandardMaterial({ color: '#00ffff', emissive: '#00ffff', emissiveIntensity: 0.5, transparent: true, opacity: 0.6, wireframe: true }); // サイバー感のある壁
 
 // 物理マテリアルの定義と接触設定
 const defaultPhysicsMaterial = new CANNON.Material('default');
@@ -111,7 +111,27 @@ let chaserEnemy = null; // 追跡してくる敵オブジェクトの保持
 
 // オプション: isObstacle, isTrampoline, moveProps(動く足場用), isWallrun
 function createBox(width, height, depth, x, y, z, material, isGoal = false, isObstacle = false, isTrampoline = false, moveProps = null, isWallrun = false) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), material);
+    let geometry;
+    if (isObstacle) {
+        // 障害物は尖ったクリスタル型（八面体）
+        geometry = new THREE.OctahedronGeometry(width / 1.5, 0);
+    } else if (isGoal) {
+        // ゴールは光り輝くシリンダー型
+        geometry = new THREE.CylinderGeometry(width / 1.5, width / 1.5, height, 16);
+    } else {
+        geometry = new THREE.BoxGeometry(width, height, depth);
+    }
+
+    const mesh = new THREE.Mesh(geometry, material);
+
+    // 通常の足場やギミックにはSF風のネオンライン（ワイヤーフレームエッジ）を追加
+    if (!isObstacle && !isGoal && !isWallrun) {
+        const edgeColor = (isTrampoline) ? 0xff8800 : 0x00ffff;
+        const edges = new THREE.EdgesGeometry(geometry);
+        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: edgeColor, transparent: true, opacity: 0.6 }));
+        mesh.add(line);
+    }
+
     mesh.position.set(x, y, z);
     mesh.receiveShadow = true;
     mesh.castShadow = true;
@@ -179,8 +199,16 @@ function clearStage() {
 
 // チェイサー（追跡エネミー）の生成
 function spawnChaser() {
-    // 既に存在する場合は作成しない（一応の防御）
-    if (chaserEnemy) return;
+    // スポーン位置: プレイヤーの少し背後（Z軸の+方向）で高い位置
+    const spawnZ = 8;
+    const spawnY = 5;
+
+    // 既に存在する場合は位置をプレイヤーの背後にリセットして終了
+    if (chaserEnemy) {
+        chaserEnemy.body.position.set(0, spawnY, spawnZ);
+        chaserEnemy.mesh.position.set(0, spawnY, spawnZ);
+        return;
+    }
 
     const radius = 1.0; // プレイヤーより一回り大きい
 
@@ -193,10 +221,6 @@ function spawnChaser() {
     });
 
     const mesh = new THREE.Mesh(new THREE.SphereGeometry(radius, 32, 32), material);
-
-    // スポーン位置: プレイヤーの少し背後（Z軸の+方向）で高い位置
-    const spawnZ = 8;
-    const spawnY = 5;
     mesh.position.set(0, spawnY, spawnZ);
     mesh.castShadow = true;
     scene.add(mesh);
@@ -323,12 +347,13 @@ function loadStage(level) {
     // Y座標の初期位置を屋上（0）より少し上に
     playerBody.position.set(0, 3, 0);
 
-    // ゴールの目印（物理判定なしの単純なMesh）
+    // ゴールの目印（光るサイバーなリング）
     const goalSign = new THREE.Mesh(
-        new THREE.CylinderGeometry(1, 1, 0.5, 32),
-        new THREE.MeshStandardMaterial({ color: 'yellow', emissive: 'yellow', emissiveIntensity: 0.8 })
+        new THREE.TorusGeometry(1.5, 0.2, 16, 50),
+        new THREE.MeshStandardMaterial({ color: '#00ffff', emissive: '#00ffff', emissiveIntensity: 1.0 })
     );
-    goalSign.position.set(0, 3, currentZ - 4);
+    goalSign.position.set(0, 5, currentZ - 5);
+    goalSign.rotation.x = Math.PI / 2; // リングを水平に向かせる
     scene.add(goalSign);
 
     // goalSignもクリーンアップ対象に追加
@@ -450,9 +475,21 @@ function animate() {
             .addScaledVector(right, moveX)
             .normalize();
 
-        // ジャンプ判定用の接地確認
-        const isGrounded = Math.abs(playerBody.velocity.y) < 0.2;
-        if (isGrounded) {
+        // ジャンプ判定用の接地確認（正確な接触判定に修正）
+        let isGrounded = false;
+        for (let i = 0; i < world.contacts.length; i++) {
+            const c = world.contacts[i];
+            if (c.bi.id === playerBody.id || c.bj.id === playerBody.id) {
+                const ny = (c.bi.id === playerBody.id) ? -c.ni.y : c.ni.y;
+                if (ny > 0.5) {
+                    isGrounded = true;
+                    break;
+                }
+            }
+        }
+
+        // 接地時、かつ上昇中でなければジャンプ回数をリセット
+        if (isGrounded && playerBody.velocity.y <= 0.1) {
             jumpCount = 0;
         }
 
